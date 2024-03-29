@@ -2,79 +2,79 @@
 module axi_stream_insert_header_tb(
 
     );
-parameter 								DATA_DEPTH =256;
-parameter 								DATA_WD = 32;
-parameter 								DATA_BYTE_WD = DATA_WD / 8;
-parameter 								BYTE_CNT_WD = $clog2(DATA_BYTE_WD);
+parameter 									DATA_DEPTH =256;
+parameter 									DATA_WD = 32;
+parameter 									DATA_BYTE_WD = DATA_WD / 8;
+parameter 									BYTE_CNT_WD = $clog2(DATA_BYTE_WD);
 
-reg										clk;
-reg										rst_n;
+reg										clk		;
+reg										rst_n		;
 
 // data_in
 reg 										valid_in	;
 reg	 	[DATA_WD-1 : 0] 			data_in	;
 reg 		[DATA_BYTE_WD-1 : 0]		keep_in	;
-reg 										last_in	;
-wire 										ready_in ;
+reg 										last_in		;
+wire 										ready_in	;
 
 // data_out
-wire 										valid_out;
-wire 		[DATA_WD-1 : 0] 			data_out	;
-wire 		[DATA_BYTE_WD-1 : 0] 	keep_out	;
+wire 										valid_out	;
+wire 		[DATA_WD-1 : 0] 						data_out	;
+wire 		[DATA_BYTE_WD-1 : 0] 						keep_out	;
 wire 										last_out	;
-reg 										ready_out;
+reg 										ready_out	;
 
 // header
-reg 										valid_insert ;
-reg 		[DATA_WD-1 : 0] 			data_insert;
-reg 		[DATA_BYTE_WD-1 : 0]		keep_insert  ;
-wire 										ready_insert ;
+reg 										valid_insert 	;
+reg 		[DATA_WD-1 : 0] 						data_insert	;
+reg 		[DATA_BYTE_WD-1 : 0]						keep_insert 	;
+wire 										ready_insert 	;
 
 
 
 
 
 axi_stream_insert_header axi_stream_insert_header_u(
-	.clk									( clk				),
-	.rst_n								( rst_n			),
+	.clk									( clk		),
+	.rst_n									( rst_n		),
 	
 	// data_in
-	.valid_in							( valid_in		),
-	.data_in								( data_in		),
-	.keep_in								( keep_in		),
-	.last_in								( last_in		),
-	.ready_in							( ready_in		),
+	.valid_in								( valid_in	),
+	.data_in								( data_in	),
+	.keep_in								( keep_in	),
+	.last_in								( last_in	),
+	.ready_in								( ready_in	),
 	
 	// data_out
-	.valid_out							( valid_out		),
-	.data_out							( data_out		),
-	.keep_out							( keep_out		),
-	.last_out							( last_out		),
-	.ready_out							( ready_out		),
+	.valid_out								( valid_out	),
+	.data_out								( data_out	),
+	.keep_out								( keep_out	),
+	.last_out								( last_out	),
+	.ready_out								( ready_out	),
 	
 	//header
-	.valid_insert						( valid_insert	),
-	.data_insert						( data_insert),
-	.keep_insert						( keep_insert	),
-	.byte_insert_cnt					(					),
-	.ready_insert						( ready_insert	)
+	.valid_insert								( valid_insert	),
+	.data_insert								( data_insert	),
+	.keep_insert								( keep_insert	),
+	.byte_insert_cnt							(		),
+	.ready_insert								( ready_insert	)
 );	
 
 
 
 always #10 clk = !clk;
 initial begin
-											clk				= 'd0;
-											rst_n				= 'd0;
-											//data_in
-											valid_in			= 'd1;
-											data_in			= 'd0;
-											keep_in			= 4'b1111;
-											last_in			= 'd0;
-											//header
-											valid_insert	= 'd0;
-											data_insert		= 'd0;
-											keep_insert 	= 'd0;
+										clk		= 'd0;
+										rst_n		= 'd0;
+										//data_in
+										valid_in	= 'd1;
+										data_in		= 'd0;
+										keep_in		= 4'b1111;
+										last_in		= 'd0;
+										//header
+										valid_insert	= 'd0;
+										data_insert	= 'd0;
+										keep_insert 	= 'd0;
 											
 									#20	rst_n = 'd1;
 end
@@ -83,7 +83,7 @@ end
 ********************************data channel singal*****************************
 */
 //data valid in gen
-reg [2:0]random1;
+reg 		[2:0]						random1;
 always@(posedge clk)begin
 										  random1 = $random %8;
 										  repeat (random1) @(posedge clk);
@@ -122,7 +122,7 @@ else
 end
 
 /*
-********************************header channel singal*****************************
+************************************************header channel singal*****************************************************************
 */
 //valid insert and	data insert
 reg		[3:0]						  cnt1	;
@@ -160,11 +160,11 @@ always@(posedge clk or negedge rst_n)begin
 if(!rst_n)
 										  keep_insert <= 'd0;
 else	case(random2) 
-					4'd0 :			  keep_insert <= 'd0001;	
-					4'd1 :			  keep_insert <= 'd0011;	
-					4'd2 :			  keep_insert <= 'd0111;	
-					4'd3 :			  keep_insert <= 'd1111;	
-					default:										;
+					4'd0 :			  		  keep_insert <= 'd0001;	
+					4'd1 :			 		  keep_insert <= 'd0011;	
+					4'd2 :			  		  keep_insert <= 'd0111;	
+					4'd3 :			 		  keep_insert <= 'd1111;	
+					default:							;
 		endcase
 end
 
